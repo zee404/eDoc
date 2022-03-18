@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main-content %}
+    <div class="page-content">
+        <div class="container-fluid">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <h4 class="card-title">Find Doctor</h4>
+                            <p class="card-title-desc">Find the best doctor for yourself</p>
+
+                            <form method="post" enctype="multipart/form-data" action="{% url 'search' %}">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Select Disease</label>
+                                            <select class="form-control select2" id="selSpecialization"
+                                                    name="selSpecialization">
+                                                <option>Select</option>
+                                                {#                                                <optgroup label="Alaskan/Hawaiian Time Zone">#}
+                                                {#                                                    <option value="AK">Alaska</option>#}
+                                                {#                                                    <option value="HI">Hawaii</option>#}
+                                                {#                                                </optgroup>#}
+                                                {% for specializaion in specializations %}
+                                                    <option value="{{ specializaion.name }}">{{ specializaion.name }}</option>
+
+                                                {% endfor %}
+
+                                                {#                                                    <option value="NV">Nevada</option>#}
+                                                {#                                                    <option value="OR">Oregon</option>#}
+                                                {#                                                    <option value="WA">Washington</option>#}
+
+
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label>Doctor Name</label>
+
+                                        <input type="text" id="docName" class="form-control" maxlength="25"
+                                               name="docName"
+                                               id="defaultconfig"/>
+
+                                    </div>
+
+
+                                </div>
+                                <button type="submit" class="btn btn-primary waves-effect waves-light align-right">
+                                    Search
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- end select2 -->
+
+                </div>
+
+
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Doctors</h4>
+
+                    <div class="row">
+                        {% for doctor in doctors %}
+                            <!-- Doctors Card  -->
+                            <div class=" col-xl-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title mt-0" id="docname{{ doctor.id }}">{{ doctor.name }}</h4>
+                                        <h6 class="card-subtitle font-14 text-muted"
+                                            id="docspecialzation{{ doctor.id }}">{{ doctor.specialization.name }}</h6>
+                                    </div>
+                                    <img class="img-fluid" id="docpicture{{ doctor.id }}" src="{{ doctor.picture.url }}"
+                                         alt="Card image cap">
+                                    <div class="card-body">
+                                        <p class="card-text"
+                                           id="docdescription{{ doctor.id }}">{{ doctor.description }}</p>
+
+                                    </div>
+                                    <h1 hidden="true" id="doccontact{{ doctor.id }}"> {{ doctor.contact }}</h1>
+                                    <h1 hidden="true" id="docemail{{ doctor.id }}"> {{ doctor.email }}</h1>
+                                    <h1 hidden="true" id="docaddress{{ doctor.id }}"> {{ doctor.address }}</h1>
+
+
+                                            <button type="button" class="btn btn-primary  waves-effect waves-light"
+                                                    data-toggle="modal" data-target=".exampleModal"
+                                                    onclick="showprofile({{ doctor.id }})">Book Appointment</button>
+
+
+
+
+
+                                </div>
+                            </div>
+                            <!-- End Doctors Card  -->
+
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- POP UP PROFILE  -->
+        <div class="modal fade exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="bg-soft-primary">
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="text-primary p-3">
+                                    <h5 class="text-primary" id="doc_description_on_modal">Welcome Back !</h5>
+                                    <p id="doc_address_on_modal">Skote Dashboard</p>
+                                </div>
+                            </div>
+                            <div class="col-5 align-self-end">
+                                <img src="{% static 'images/profile-img.png' %}" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="avatar-md profile-user-wid mb-4">
+                                    <img id="doc_picture_on_modal" src="{% static 'images/users/avatar-1.jpg' %}" alt=""
+                                         class=" rounded-circle" height="80" width="80">
+                                </div>
+                                <h5 class="font-size-15 text-truncate" id="doc_name_on_modal">Henry Price</h5>
+                                <p class="text-muted mb-0 text-truncate" id="doc_specialization_on_modal">UI/UX
+                                    Designer</p>
+                            </div>
+
+                            <div class="col-sm-8">
+                                <div class="pt-4">
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h5 class="font-size-15">Contact no:</h5>
+                                            <p class="text-muted mb-0" id="doc_contact_on_modal">contact no</p>
+                                            <a href="tel:" id="doc_contact_href_on_modal"
+                                               class="btn btn-primary waves-effect waves-light btn-sm">Call Now<i
+                                                    class="mdi mdi-arrow-right ml-1"></i></a>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="font-size-15">Email:</h5>
+                                            <p class="text-muted mb-0" id="doc_email_on_modal">email</p>
+                                            <a href="" id="doc_email_href_on_modal"
+                                               class="btn btn-primary waves-effect waves-light btn-sm">Mail Now <i
+                                                    class="mdi mdi-arrow-right ml-1"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END POP UP PROFILE  -->
+    </div>
+
+
+
+{% endblock main-content %}
+{% block js %}
+    <script>
+        function showprofile(doc_id) {
+            {#alert(doc_id)#}
+            name = $("#docname" + doc_id).html()
+            specialization = $("#docspecialzation" + doc_id).html()
+            description = $("#docdescription" + doc_id).html()
+            address = $("#docaddress" + doc_id).html()
+            contactNO = $("#doccontact" + doc_id).html()
+            email = $("#docemail" + doc_id).html()
+            picture = $("#docpicture" + doc_id).attr("src")
+            {#alert(picture)#}
+            {#picture= {{ request.META.HTTP_HOST }}+picture#}
+
+            $("#doc_name_on_modal").text(name)
+            $("#doc_specialization_on_modal").text(specialization)
+            $("#doc_description_on_modal").text(description)
+            $("#doc_address_on_modal").text(address)
+            $("#doc_picture_on_modal").attr("src", picture)
+            $("#doc_contact_on_modal").text(contactNO)
+            $("#doc_contact_href_on_modal").attr("href", "tel:" + contactNO)
+            $("#doc_email_on_modal").text(email)
+            $("#doc_email_href_on_modal").attr("href", "mailto:" + email)
+        }
+
+
+    </script>
+{% endblock %}
+
+
